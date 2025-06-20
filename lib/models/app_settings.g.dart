@@ -17,27 +17,27 @@ class AppSettingsAdapter extends TypeAdapter<AppSettings> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return AppSettings(
-      isDarkMode: fields[0] as bool,
-      isBiometricEnabled: fields[1] as bool,
-      isNotificationEnabled: fields[2] as bool,
-      notificationHour: fields[3] as int,
-      notificationMinute: fields[4] as int,
       pinCode: fields[5] as String?,
-      isFirstTime: fields[6] as bool,
-      isPremium: fields[7] as bool,
-      isMoodTrackingEnabled: fields[8] as bool,
-      isVoiceInputEnabled: fields[9] as bool,
-      isAIInsightsEnabled: fields[10] as bool,
-      isCloudSyncEnabled: fields[11] as bool,
-      selectedTheme: fields[12] as String,
-      selectedFont: fields[13] as String,
-      fontSize: fields[14] as double,
-      preferredPromptCategory: fields[15] as PromptCategory,
-      unlockedThemes: (fields[16] as List).cast<String>(),
-      streakCount: fields[17] as int,
       lastEntryDate: fields[18] as DateTime?,
-      earnedBadges: (fields[19] as List).cast<String>(),
-    );
+    )
+      .._isDarkMode = fields[0] as bool?
+      .._isBiometricEnabled = fields[1] as bool?
+      .._isNotificationEnabled = fields[2] as bool?
+      .._notificationHour = fields[3] as int?
+      .._notificationMinute = fields[4] as int?
+      .._isFirstTime = fields[6] as bool?
+      .._isPremium = fields[7] as bool?
+      .._isMoodTrackingEnabled = fields[8] as bool?
+      .._isVoiceInputEnabled = fields[9] as bool?
+      .._isAIInsightsEnabled = fields[10] as bool?
+      .._isCloudSyncEnabled = fields[11] as bool?
+      .._selectedTheme = fields[12] as String?
+      .._selectedFont = fields[13] as String?
+      .._fontSize = fields[14] as double?
+      .._preferredPromptCategory = fields[15] as PromptCategory?
+      .._unlockedThemes = (fields[16] as List?)?.cast<String>()
+      .._streakCount = fields[17] as int?
+      .._earnedBadges = (fields[19] as List?)?.cast<String>();
   }
 
   @override
@@ -45,45 +45,45 @@ class AppSettingsAdapter extends TypeAdapter<AppSettings> {
     writer
       ..writeByte(20)
       ..writeByte(0)
-      ..write(obj.isDarkMode)
+      ..write(obj._isDarkMode)
       ..writeByte(1)
-      ..write(obj.isBiometricEnabled)
+      ..write(obj._isBiometricEnabled)
       ..writeByte(2)
-      ..write(obj.isNotificationEnabled)
+      ..write(obj._isNotificationEnabled)
       ..writeByte(3)
-      ..write(obj.notificationHour)
+      ..write(obj._notificationHour)
       ..writeByte(4)
-      ..write(obj.notificationMinute)
+      ..write(obj._notificationMinute)
       ..writeByte(5)
       ..write(obj.pinCode)
       ..writeByte(6)
-      ..write(obj.isFirstTime)
+      ..write(obj._isFirstTime)
       ..writeByte(7)
-      ..write(obj.isPremium)
+      ..write(obj._isPremium)
       ..writeByte(8)
-      ..write(obj.isMoodTrackingEnabled)
+      ..write(obj._isMoodTrackingEnabled)
       ..writeByte(9)
-      ..write(obj.isVoiceInputEnabled)
+      ..write(obj._isVoiceInputEnabled)
       ..writeByte(10)
-      ..write(obj.isAIInsightsEnabled)
+      ..write(obj._isAIInsightsEnabled)
       ..writeByte(11)
-      ..write(obj.isCloudSyncEnabled)
+      ..write(obj._isCloudSyncEnabled)
       ..writeByte(12)
-      ..write(obj.selectedTheme)
+      ..write(obj._selectedTheme)
       ..writeByte(13)
-      ..write(obj.selectedFont)
+      ..write(obj._selectedFont)
       ..writeByte(14)
-      ..write(obj.fontSize)
+      ..write(obj._fontSize)
       ..writeByte(15)
-      ..write(obj.preferredPromptCategory)
+      ..write(obj._preferredPromptCategory)
       ..writeByte(16)
-      ..write(obj.unlockedThemes)
+      ..write(obj._unlockedThemes)
       ..writeByte(17)
-      ..write(obj.streakCount)
+      ..write(obj._streakCount)
       ..writeByte(18)
       ..write(obj.lastEntryDate)
       ..writeByte(19)
-      ..write(obj.earnedBadges);
+      ..write(obj._earnedBadges);
   }
 
   @override

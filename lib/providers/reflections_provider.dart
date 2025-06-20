@@ -12,22 +12,26 @@ class ReflectionsProvider extends ChangeNotifier {
 
   List<ReflectionEntry> get reflections => List.unmodifiable(_reflections);
   bool get isLoading => _isLoading;
-
   ReflectionsProvider() {
-    _loadReflections();
+    // Don't load reflections immediately in constructor to avoid crashes
+    Future.microtask(() => _loadReflections());
   }
 
-  void _loadReflections() {
+  Future<void> _loadReflections() async {
     _isLoading = true;
     notifyListeners();
 
-    _reflections = StorageService.getAllReflections();
-    _reflections.sort(
-      (a, b) => b.date.compareTo(a.date),
-    ); // Sort by date descending
-
-    _isLoading = false;
-    notifyListeners();
+    try {
+      _reflections = StorageService.getAllReflections();
+      _reflections.sort(
+        (a, b) => b.date.compareTo(a.date),
+      ); // Sort by date descending
+    } catch (e) {
+      debugPrint('Error loading reflections: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   Future<void> addReflection({

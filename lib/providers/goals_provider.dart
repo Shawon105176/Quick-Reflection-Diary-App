@@ -12,9 +12,9 @@ class GoalsProvider extends ChangeNotifier {
   List<GoalEntry> get completedGoals =>
       _goals.where((goal) => goal.isCompleted).toList();
   bool get isLoading => _isLoading;
-
   GoalsProvider() {
-    _loadGoals();
+    // Don't load goals immediately in constructor to avoid crashes
+    Future.microtask(() => _loadGoals());
   }
 
   Future<void> _loadGoals() async {

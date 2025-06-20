@@ -51,8 +51,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _initializeApp() async {
     try {
-      // Initialize services
-      await StorageService.initialize();
+      // Initialize notification service
       await NotificationService.initialize();
 
       // Wait for animation to complete
@@ -72,6 +71,7 @@ class _SplashScreenState extends State<SplashScreen>
       }
     } catch (e) {
       // Handle initialization errors
+      debugPrint('Splash screen error: $e');
       if (mounted) {
         _navigateToOnboarding();
       }

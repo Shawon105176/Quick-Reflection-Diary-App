@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'services/storage_service.dart';
 import 'providers/theme_provider.dart';
 import 'providers/reflections_provider.dart';
 import 'providers/mood_provider.dart';
@@ -7,7 +8,16 @@ import 'providers/goals_provider.dart';
 import 'providers/premium_provider.dart';
 import 'screens/splash_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize storage service first
+  try {
+    await StorageService.initialize();
+  } catch (e) {
+    debugPrint('Error initializing storage: $e');
+  }
+
   runApp(const MyApp());
 }
 

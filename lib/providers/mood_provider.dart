@@ -8,9 +8,9 @@ class MoodProvider extends ChangeNotifier {
 
   List<MoodEntry> get moods => _moods;
   bool get isLoading => _isLoading;
-
   MoodProvider() {
-    _loadMoods();
+    // Don't load moods immediately in constructor to avoid crashes
+    Future.microtask(() => _loadMoods());
   }
 
   Future<void> _loadMoods() async {
