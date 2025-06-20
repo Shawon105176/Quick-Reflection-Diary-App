@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/theme_provider.dart';
+import '../providers/premium_provider.dart';
 import '../services/auth_service.dart';
 import '../services/notification_service.dart';
 import '../services/storage_service.dart';
+import '../screens/goals_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -50,6 +52,112 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
               const SizedBox(height: 24),
+
+              // Premium section
+              Consumer<PremiumProvider>(
+                builder: (context, premiumProvider, child) {
+                  return Column(
+                    children: [
+                      _buildSectionHeader('Premium Features', Icons.star),
+                      Card(
+                        child: Column(
+                          children: [
+                            if (!premiumProvider.isPremium) ...[
+                              ListTile(
+                                leading: Icon(
+                                  Icons.upgrade,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                                title: const Text('Upgrade to Premium'),
+                                subtitle: const Text(
+                                  'Unlock all premium features',
+                                ),
+                                trailing: const Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 16,
+                                ),
+                                onTap:
+                                    () => premiumProvider.showPremiumDialog(
+                                      context,
+                                    ),
+                              ),
+                              const Divider(height: 1),
+                              ListTile(
+                                leading: const Icon(Icons.developer_mode),
+                                title: const Text('Enable Premium (Testing)'),
+                                subtitle: const Text(
+                                  'For development/testing only',
+                                ),
+                                onTap:
+                                    () =>
+                                        premiumProvider
+                                            .activatePremiumForTesting(),
+                              ),
+                            ] else ...[
+                              ListTile(
+                                leading: Icon(
+                                  Icons.verified,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                                title: const Text('Premium Active'),
+                                subtitle: const Text(
+                                  'You have access to all premium features',
+                                ),
+                              ),
+                              const Divider(height: 1),
+                              ListTile(
+                                leading: const Icon(Icons.analytics),
+                                title: const Text('Mood Analytics'),
+                                subtitle: const Text(
+                                  'Track your mood patterns',
+                                ),
+                                trailing: const Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 16,
+                                ),
+                                onTap: () {
+                                  // Navigate to mood tracker if needed
+                                },
+                              ),
+                              const Divider(height: 1),
+                              ListTile(
+                                leading: const Icon(Icons.flag),
+                                title: const Text('Goals & Dreams'),
+                                subtitle: const Text(
+                                  'Set and track your goals',
+                                ),
+                                trailing: const Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 16,
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const GoalsScreen(),
+                                    ),
+                                  );
+                                },
+                              ),
+                              const Divider(height: 1),
+                              ListTile(
+                                leading: const Icon(Icons.developer_mode),
+                                title: const Text('Disable Premium (Testing)'),
+                                subtitle: const Text(
+                                  'For development/testing only',
+                                ),
+                                onTap:
+                                    () => premiumProvider.deactivatePremium(),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                    ],
+                  );
+                },
+              ),
 
               // Security section
               _buildSectionHeader('Security', Icons.security),
