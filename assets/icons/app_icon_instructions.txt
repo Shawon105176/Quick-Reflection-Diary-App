@@ -1,0 +1,13 @@
+# Temporary Instructions
+
+Since I cannot directly save image files, please follow these steps:
+
+1. Right-click on the purple "M" logo image you showed me
+2. Save it as "app_icon.png"
+3. Place it in this exact location: c:\Users\dev_shawon\Desktop\Shawon\dairy_app\assets\icons\app_icon.png
+
+4. Then run: dart run flutter_launcher_icons
+
+5. Finally run: flutter clean && flutter run
+
+Your logo will then be applied to the app!

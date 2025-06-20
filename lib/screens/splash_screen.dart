@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../services/storage_service.dart';
 import '../services/notification_service.dart';
+import '../widgets/app_logo.dart';
 import 'onboarding_screen.dart';
 import 'auth_screen.dart';
 import 'main_navigation.dart';
@@ -119,19 +120,8 @@ class _SplashScreenState extends State<SplashScreen>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        width: 120,
-                        height: 120,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.auto_stories_rounded,
-                          size: 60,
-                          color: Colors.white,
-                        ),
-                      ),
+                      // Custom App Logo
+                      const AppLogo(size: 120, showBackground: false),
                       const SizedBox(height: 24),
                       Text(
                         'Mindful',

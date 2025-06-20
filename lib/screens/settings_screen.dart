@@ -6,6 +6,7 @@ import '../services/auth_service.dart';
 import '../services/notification_service.dart';
 import '../services/storage_service.dart';
 import '../screens/goals_screen.dart';
+import '../screens/icon_generator_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -299,6 +300,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
 
               const SizedBox(height: 32),
+
+              // Debug section (for development)
+              const SizedBox(height: 24),
+              _buildSectionHeader('Developer Tools', Icons.build),
+              Card(
+                child: ListTile(
+                  leading: const Icon(Icons.image),
+                  title: const Text('Generate App Icon'),
+                  subtitle: const Text('Create PNG icon for launcher'),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const IconGeneratorScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ),
             ],
           );
         },
