@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:introduction_screen/introduction_screen.dart';
+import 'package:lottie/lottie.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import '../providers/theme_provider.dart';
 import '../services/storage_service.dart';
 import '../models/app_settings.dart';
+import '../widgets/app_logo.dart';
 import 'main_navigation.dart';
 
 class OnboardingScreen extends StatefulWidget {

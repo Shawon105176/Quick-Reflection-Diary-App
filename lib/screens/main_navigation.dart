@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart';
+import 'modern_home_screen.dart';
 import 'calendar_screen.dart';
-import 'history_screen.dart';
-import 'mood_tracker_screen.dart';
+import 'enhanced_mood_tracker_screen.dart';
+import 'analytics_screen.dart';
+import 'search_screen.dart';
 import 'settings_screen.dart';
 
 class MainNavigation extends StatefulWidget {
@@ -16,10 +17,11 @@ class _MainNavigationState extends State<MainNavigation> {
   int _currentIndex = 0;
 
   final List<Widget> _screens = [
-    const HomeScreen(),
+    const ModernHomeScreen(),
     const CalendarScreen(),
-    const MoodTrackerScreen(),
-    const HistoryScreen(),
+    const EnhancedMoodTrackerScreen(),
+    const AnalyticsScreen(),
+    const SearchScreen(),
     const SettingsScreen(),
   ];
 
@@ -46,14 +48,19 @@ class _MainNavigationState extends State<MainNavigation> {
             label: 'Calendar',
           ),
           NavigationDestination(
-            icon: Icon(Icons.analytics_outlined),
-            selectedIcon: Icon(Icons.analytics),
+            icon: Icon(Icons.mood_outlined),
+            selectedIcon: Icon(Icons.mood),
             label: 'Mood',
           ),
           NavigationDestination(
-            icon: Icon(Icons.history_outlined),
-            selectedIcon: Icon(Icons.history),
-            label: 'History',
+            icon: Icon(Icons.analytics_outlined),
+            selectedIcon: Icon(Icons.analytics),
+            label: 'Analytics',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.search_outlined),
+            selectedIcon: Icon(Icons.search),
+            label: 'Search',
           ),
           NavigationDestination(
             icon: Icon(Icons.settings_outlined),

@@ -7,6 +7,7 @@ import '../services/notification_service.dart';
 import '../services/storage_service.dart';
 import '../screens/goals_screen.dart';
 import '../screens/icon_generator_screen.dart';
+import '../screens/theme_selection_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -40,16 +41,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
               // Appearance section
               _buildSectionHeader('Appearance', Icons.palette),
               Card(
-                child: SwitchListTile(
-                  title: const Text('Dark Mode'),
-                  subtitle: const Text('Choose your preferred theme'),
-                  value: settings.isDarkMode,
-                  onChanged: (value) {
-                    themeProvider.toggleTheme();
-                  },
-                  secondary: Icon(
-                    settings.isDarkMode ? Icons.dark_mode : Icons.light_mode,
-                  ),
+                child: Column(
+                  children: [
+                    SwitchListTile(
+                      title: const Text('Dark Mode'),
+                      subtitle: const Text('Choose your preferred theme'),
+                      value: settings.isDarkMode,
+                      onChanged: (value) {
+                        themeProvider.toggleTheme();
+                      },
+                      secondary: Icon(
+                        settings.isDarkMode
+                            ? Icons.dark_mode
+                            : Icons.light_mode,
+                      ),
+                    ),
+                    ListTile(
+                      leading: Icon(
+                        Icons.color_lens,
+                        color: themeProvider.primaryColor,
+                      ),
+                      title: const Text('App Theme'),
+                      subtitle: Text(themeProvider.themeName),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const ThemeSelectionScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 24),

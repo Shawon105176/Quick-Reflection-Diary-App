@@ -4,6 +4,10 @@ import 'package:intl/intl.dart';
 import '../providers/reflections_provider.dart';
 import '../models/reflection_entry.dart';
 import '../widgets/app_logo.dart';
+import '../widgets/stats_card_widget.dart';
+import '../widgets/quick_mood_selector.dart';
+import '../widgets/daily_inspiration.dart';
+import '../widgets/recent_reflections.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

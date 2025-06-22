@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../services/storage_service.dart';
 import '../models/app_settings.dart';
 
@@ -69,6 +70,23 @@ class ThemeProvider extends ChangeNotifier {
     }
   }
 
+  Color get accentColor {
+    switch (_currentTheme) {
+      case AppTheme.mindfulPurple:
+        return const Color(0xFF9C27B0);
+      case AppTheme.oceanBlue:
+        return const Color(0xFF03DAC6);
+      case AppTheme.forestGreen:
+        return const Color(0xFF8BC34A);
+      case AppTheme.sunsetOrange:
+        return const Color(0xFFFFC107);
+      case AppTheme.roseGold:
+        return const Color(0xFFFFD700);
+      case AppTheme.charcoalDark:
+        return const Color(0xFF607D8B);
+    }
+  }
+
   String get themeName {
     switch (_currentTheme) {
       case AppTheme.mindfulPurple:
@@ -126,6 +144,31 @@ class ThemeProvider extends ChangeNotifier {
       shape: const CircleBorder(),
       elevation: 4,
     ),
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: Colors.white,
+      indicatorColor: primaryColor.withOpacity(0.2),
+      labelTextStyle: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return GoogleFonts.inter(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: primaryColor,
+          );
+        }
+        return GoogleFonts.inter(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          color: Colors.grey[600],
+        );
+      }),
+    ),
+    chipTheme: ChipThemeData(
+      backgroundColor: Colors.grey[100],
+      selectedColor: primaryColor.withOpacity(0.2),
+      labelStyle: GoogleFonts.inter(fontSize: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    ),
   );
 
   ThemeData get darkTheme => ThemeData(
@@ -169,5 +212,34 @@ class ThemeProvider extends ChangeNotifier {
       shape: const CircleBorder(),
       elevation: 4,
     ),
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: const Color(0xFF1E1E1E),
+      indicatorColor: primaryColor.withOpacity(0.3),
+      labelTextStyle: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return GoogleFonts.inter(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: primaryColor,
+          );
+        }
+        return GoogleFonts.inter(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          color: Colors.grey[400],
+        );
+      }),
+    ),
+    chipTheme: ChipThemeData(
+      backgroundColor: Colors.grey[800],
+      selectedColor: primaryColor.withOpacity(0.3),
+      labelStyle: GoogleFonts.inter(fontSize: 14, color: Colors.white),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    ),
   );
+
+  static ThemeProvider of(BuildContext context, {bool listen = false}) {
+    return Provider.of<ThemeProvider>(context, listen: listen);
+  }
 }

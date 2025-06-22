@@ -86,9 +86,36 @@ dependencies:
   # File picker for exports
   file_picker: ^8.1.4
   path_provider: ^2.1.5
-  
-  # Google Fonts
+    # Google Fonts
   google_fonts: ^6.2.1
+  
+  # Voice recording
+  record: ^6.0.0
+  audioplayers: ^6.5.0
+  
+  # Weather API
+  geolocator: ^14.0.1
+  geocoding: ^4.0.0
+  
+  # Image picker and handling
+  image_picker: ^1.1.2
+  image: ^4.3.0
+  
+  # Animations
+  shimmer: ^3.0.0
+  flutter_staggered_animations: ^1.1.1
+  
+  # Search
+  flutter_search_bar: ^3.0.0
+  
+  # Onboarding
+  introduction_screen: ^3.1.17
+  
+  # Share functionality
+  share_plus: ^11.0.0
+  
+  # Beautiful icons
+  flutter_svg: ^2.2.0
 
 dev_dependencies:
   flutter_test:
