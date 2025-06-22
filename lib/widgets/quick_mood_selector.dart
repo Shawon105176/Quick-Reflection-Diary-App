@@ -85,20 +85,29 @@ class _QuickMoodSelectorState extends State<QuickMoodSelector>
                 size: 28,
               ),
               const SizedBox(width: 12),
-              Text(
-                'How are you feeling today?',
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
+              Expanded(
+                child: Text(
+                  'How are you feeling today?',
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
           ),
           const SizedBox(height: 20),
-          Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            children:
-                MoodType.values.map((mood) => _buildMoodButton(mood)).toList(),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: double.infinity),
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              alignment: WrapAlignment.start,
+              children:
+                  MoodType.values
+                      .map((mood) => _buildMoodButton(mood))
+                      .toList(),
+            ),
           ),
           if (_selectedMood != null) ...[
             const SizedBox(height: 20),
@@ -142,7 +151,8 @@ class _QuickMoodSelectorState extends State<QuickMoodSelector>
           child: GestureDetector(
             onTap: () => _selectMood(mood),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              constraints: const BoxConstraints(minWidth: 80, maxWidth: 140),
               decoration: BoxDecoration(
                 gradient:
                     isSelected
@@ -175,21 +185,26 @@ class _QuickMoodSelectorState extends State<QuickMoodSelector>
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     _getMoodEmoji(mood),
-                    style: const TextStyle(fontSize: 20),
+                    style: const TextStyle(fontSize: 18),
                   ),
-                  const SizedBox(width: 8),
-                  Text(
-                    _getMoodName(mood),
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color:
-                          isSelected
-                              ? Colors.white
-                              : theme.colorScheme.onSurface,
-                      fontWeight:
-                          isSelected ? FontWeight.bold : FontWeight.normal,
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      _getMoodName(mood),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color:
+                            isSelected
+                                ? Colors.white
+                                : theme.colorScheme.onSurface,
+                        fontWeight:
+                            isSelected ? FontWeight.bold : FontWeight.normal,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ],
