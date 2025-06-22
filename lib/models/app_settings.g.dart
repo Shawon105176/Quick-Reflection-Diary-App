@@ -37,13 +37,14 @@ class AppSettingsAdapter extends TypeAdapter<AppSettings> {
       .._preferredPromptCategory = fields[15] as PromptCategory?
       .._unlockedThemes = (fields[16] as List?)?.cast<String>()
       .._streakCount = fields[17] as int?
-      .._earnedBadges = (fields[19] as List?)?.cast<String>();
+      .._earnedBadges = (fields[19] as List?)?.cast<String>()
+      .._userName = fields[20] as String?;
   }
 
   @override
   void write(BinaryWriter writer, AppSettings obj) {
     writer
-      ..writeByte(20)
+      ..writeByte(21)
       ..writeByte(0)
       ..write(obj._isDarkMode)
       ..writeByte(1)
@@ -83,7 +84,9 @@ class AppSettingsAdapter extends TypeAdapter<AppSettings> {
       ..writeByte(18)
       ..write(obj.lastEntryDate)
       ..writeByte(19)
-      ..write(obj._earnedBadges);
+      ..write(obj._earnedBadges)
+      ..writeByte(20)
+      ..write(obj._userName);
   }
 
   @override

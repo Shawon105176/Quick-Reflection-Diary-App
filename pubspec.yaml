@@ -63,9 +63,11 @@ dependencies:
   # UUID for unique IDs
   uuid: ^4.2.2
   
-  # Premium Features Dependencies
-  # Charts for mood analytics
+  # Premium Features Dependencies  # Charts for mood analytics
   fl_chart: ^0.69.0
+  
+  # Curved Navigation Bar
+  curved_navigation_bar: ^1.0.3
   
   # Speech to text
   speech_to_text: ^7.0.0

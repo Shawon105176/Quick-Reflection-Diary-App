@@ -361,19 +361,33 @@ class ThemeProvider extends ChangeNotifier {
       indicatorColor: primaryColor.withOpacity(hasGradients ? 0.3 : 0.2),
       elevation: hasGradients ? 12 : 0,
       shadowColor: hasGradients ? Colors.black.withOpacity(0.1) : null,
+      height: 65,
+      indicatorShape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(hasGradients ? 20 : 16),
+      ),
       labelTextStyle: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
           return GoogleFonts.inter(
             fontSize: 12,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
             color: primaryColor,
+            letterSpacing: 0.5,
           );
         }
         return GoogleFonts.inter(
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: FontWeight.w500,
           color: Colors.grey[600],
         );
+      }),
+      iconTheme: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return IconThemeData(
+            color: primaryColor,
+            size: hasGradients ? 26 : 24,
+          );
+        }
+        return IconThemeData(color: Colors.grey[600], size: 22);
       }),
     ),
     chipTheme: ChipThemeData(
@@ -480,19 +494,33 @@ class ThemeProvider extends ChangeNotifier {
       indicatorColor: primaryColor.withOpacity(hasGradients ? 0.4 : 0.3),
       elevation: hasGradients ? 16 : 0,
       shadowColor: hasGradients ? Colors.black.withOpacity(0.3) : null,
+      height: 65,
+      indicatorShape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(hasGradients ? 20 : 16),
+      ),
       labelTextStyle: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
           return GoogleFonts.inter(
             fontSize: 12,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
             color: primaryColor,
+            letterSpacing: 0.5,
           );
         }
         return GoogleFonts.inter(
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: FontWeight.w500,
           color: Colors.grey[400],
         );
+      }),
+      iconTheme: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return IconThemeData(
+            color: primaryColor,
+            size: hasGradients ? 26 : 24,
+          );
+        }
+        return IconThemeData(color: Colors.grey[400], size: 22);
       }),
     ),
     chipTheme: ChipThemeData(

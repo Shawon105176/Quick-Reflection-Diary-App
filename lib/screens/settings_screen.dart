@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/theme_provider.dart';
 import '../providers/premium_provider.dart';
+import '../providers/user_provider.dart';
 import '../services/auth_service.dart';
 import '../services/notification_service.dart';
 import '../services/storage_service.dart';
 import '../screens/goals_screen.dart';
 import '../screens/icon_generator_screen.dart';
 import '../screens/theme_selection_screen.dart';
+import '../screens/user_profile_setup_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -31,13 +33,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Settings'), centerTitle: true),
-      body: Consumer<ThemeProvider>(
-        builder: (context, themeProvider, child) {
+      body: Consumer2<ThemeProvider, UserProvider>(
+        builder: (context, themeProvider, userProvider, child) {
           final settings = themeProvider.settings;
 
           return ListView(
             padding: const EdgeInsets.all(16.0),
             children: [
+              // Profile section
+              _buildSectionHeader('Profile', Icons.person),
+              Card(
+                child: ListTile(
+                  leading: Icon(
+                    userProvider.hasUserName ? Icons.person : Icons.person_add,
+                    color: theme.colorScheme.primary,
+                  ),
+                  title: Text(
+                    userProvider.hasUserName ? 'Your Name' : 'Set Your Name',
+                  ),
+                  subtitle: Text(
+                    userProvider.hasUserName
+                        ? userProvider.userName
+                        : 'Add your name for a personalized experience',
+                  ),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const UserProfileSetupScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 24),
+
               // Appearance section
               _buildSectionHeader('Appearance', Icons.palette),
               Card(

@@ -62,9 +62,11 @@ class AppSettings extends HiveObject {
 
   @HiveField(18)
   DateTime? lastEntryDate;
-
   @HiveField(19)
   List<String>? _earnedBadges;
+
+  @HiveField(20)
+  String? _userName;
 
   // Getters with default values
   bool get isDarkMode => _isDarkMode ?? false;
@@ -86,6 +88,8 @@ class AppSettings extends HiveObject {
   List<String> get unlockedThemes => _unlockedThemes ?? ['default'];
   int get streakCount => _streakCount ?? 0;
   List<String> get earnedBadges => _earnedBadges ?? [];
+  String get userName => _userName ?? '';
+
   AppSettings({
     bool? isDarkMode,
     bool? isBiometricEnabled,
@@ -108,6 +112,7 @@ class AppSettings extends HiveObject {
     int? streakCount,
     this.lastEntryDate,
     List<String>? earnedBadges,
+    String? userName,
   }) : _isDarkMode = isDarkMode ?? false,
        _isBiometricEnabled = isBiometricEnabled ?? false,
        _isNotificationEnabled = isNotificationEnabled ?? true,
@@ -126,7 +131,9 @@ class AppSettings extends HiveObject {
            preferredPromptCategory ?? PromptCategory.random,
        _unlockedThemes = unlockedThemes ?? ['default'],
        _streakCount = streakCount ?? 0,
-       _earnedBadges = earnedBadges ?? [];
+       _earnedBadges = earnedBadges ?? [],
+       _userName = userName ?? '';
+
   AppSettings copyWith({
     bool? isDarkMode,
     bool? isBiometricEnabled,
@@ -148,6 +155,7 @@ class AppSettings extends HiveObject {
     int? streakCount,
     DateTime? lastEntryDate,
     List<String>? earnedBadges,
+    String? userName,
   }) {
     return AppSettings(
       isDarkMode: isDarkMode ?? this.isDarkMode,
@@ -173,6 +181,7 @@ class AppSettings extends HiveObject {
       streakCount: streakCount ?? this.streakCount,
       lastEntryDate: lastEntryDate ?? this.lastEntryDate,
       earnedBadges: earnedBadges ?? this.earnedBadges,
+      userName: userName ?? this.userName,
     );
   }
 

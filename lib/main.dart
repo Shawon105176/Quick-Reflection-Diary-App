@@ -6,6 +6,7 @@ import 'providers/reflections_provider.dart';
 import 'providers/mood_provider.dart';
 import 'providers/goals_provider.dart';
 import 'providers/premium_provider.dart';
+import 'providers/user_provider.dart';
 import 'screens/splash_screen.dart';
 
 void main() async {
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MoodProvider()),
         ChangeNotifierProvider(create: (_) => GoalsProvider()),
         ChangeNotifierProvider(create: (_) => PremiumProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {

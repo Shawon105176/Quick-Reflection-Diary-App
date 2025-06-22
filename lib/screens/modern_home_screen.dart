@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../providers/reflections_provider.dart';
+import '../providers/user_provider.dart';
 import '../models/reflection_entry.dart';
 import '../widgets/app_logo.dart';
 import '../widgets/stats_card_widget.dart';
@@ -9,6 +10,7 @@ import '../widgets/quick_mood_selector.dart';
 import '../widgets/daily_inspiration.dart';
 import '../widgets/recent_reflections.dart';
 import 'enhanced_reflection_screen.dart';
+import 'user_profile_setup_screen.dart';
 
 class ModernHomeScreen extends StatefulWidget {
   const ModernHomeScreen({super.key});
@@ -76,103 +78,136 @@ class _ModernHomeScreenState extends State<ModernHomeScreen>
     final today = DateTime.now();
     final formattedDate = DateFormat('EEEE, MMMM d, y').format(today);
 
-    return Scaffold(
-      body: FadeTransition(
-        opacity: _fadeAnimation,
-        child: CustomScrollView(
-          slivers: [
-            // App Bar with gradient
-            SliverAppBar(
-              expandedHeight: 200,
-              floating: false,
-              pinned: true,
-              backgroundColor: theme.primaryColor,
-              leading: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: AppLogo(size: 32, showBackground: false),
-              ),
-              flexibleSpace: FlexibleSpaceBar(
-                title: const Text(
-                  'Mindful',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+    return Consumer<UserProvider>(
+      builder: (context, userProvider, child) {
+        return Scaffold(
+          body: FadeTransition(
+            opacity: _fadeAnimation,
+            child: CustomScrollView(
+              slivers: [
+                // App Bar with gradient
+                SliverAppBar(
+                  expandedHeight: 220,
+                  floating: false,
+                  pinned: true,
+                  backgroundColor: theme.primaryColor,
+                  leading: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: AppLogo(size: 32, showBackground: false),
                   ),
-                ),
-                background: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        theme.primaryColor,
-                        theme.primaryColor.withOpacity(0.8),
-                      ],
+                  actions: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => const UserProfileSetupScreen(),
+                          ),
+                        );
+                      },
+                      icon: Icon(
+                        userProvider.hasUserName
+                            ? Icons.person
+                            : Icons.person_add,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        bottom: 80,
-                        left: 20,
-                        right: 20,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              formattedDate,
-                              style: const TextStyle(
-                                color: Colors.white70,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            const Text(
-                              'How are you feeling today?',
-                              style: TextStyle(
-                                color: Colors.white60,
-                                fontSize: 14,
-                              ),
-                            ),
+                  ],
+                  flexibleSpace: FlexibleSpaceBar(
+                    title: const Text(
+                      'Mindful',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    background: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            theme.primaryColor,
+                            theme.primaryColor.withOpacity(0.8),
                           ],
                         ),
                       ),
-                    ],
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            bottom: 80,
+                            left: 20,
+                            right: 20,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  formattedDate,
+                                  style: const TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  userProvider.getWelcomeMessage(),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                if (!userProvider.hasUserName) ...[
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Tap the profile icon to set your name',
+                                    style: TextStyle(
+                                      color: Colors.white.withOpacity(0.8),
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
+
+                // Main content
+                SliverPadding(
+                  padding: const EdgeInsets.all(16),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      // Quick stats
+                      const StatsCardWidget(),
+                      const SizedBox(height: 20),
+
+                      // Quick mood selector
+                      const QuickMoodSelector(),
+                      const SizedBox(height: 20),
+
+                      // Today's reflection card
+                      _buildTodayReflectionCard(), const SizedBox(height: 20),
+
+                      // Daily inspiration
+                      const DailyInspiration(),
+                      const SizedBox(height: 20),
+
+                      // Recent reflections
+                      const RecentReflections(),
+                      const SizedBox(height: 100), // Bottom padding
+                    ]),
+                  ),
+                ),
+              ],
             ),
-
-            // Main content
-            SliverPadding(
-              padding: const EdgeInsets.all(16),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  // Quick stats
-                  const StatsCardWidget(),
-                  const SizedBox(height: 20),
-
-                  // Quick mood selector
-                  const QuickMoodSelector(),
-                  const SizedBox(height: 20),
-
-                  // Today's reflection card
-                  _buildTodayReflectionCard(),
-                  const SizedBox(height: 20),
-
-                  // Daily inspiration
-                  const DailyInspiration(),
-                  const SizedBox(height: 20),
-
-                  // Recent reflections
-                  const RecentReflections(),
-                  const SizedBox(height: 100), // Bottom padding
-                ]),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 

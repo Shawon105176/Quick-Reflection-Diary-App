@@ -57,20 +57,18 @@ class _EnhancedMoodTrackerScreenState extends State<EnhancedMoodTrackerScreen>
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
+    _moodAnimations = List.generate(MoodType.values.length, (index) {
+      final totalItems = MoodType.values.length;
+      final startTime = (index / totalItems * 0.6).clamp(0.0, 0.6);
+      final endTime = (startTime + 0.4).clamp(0.4, 1.0);
 
-    _moodAnimations = List.generate(
-      MoodType.values.length,
-      (index) => Tween<double>(begin: 0.0, end: 1.0).animate(
+      return Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(
           parent: _moodAnimationController,
-          curve: Interval(
-            index * 0.1,
-            (index * 0.1) + 0.5,
-            curve: Curves.elasticOut,
-          ),
+          curve: Interval(startTime, endTime, curve: Curves.elasticOut),
         ),
-      ),
-    );
+      );
+    });
 
     _animationController.forward();
     _moodAnimationController.forward();
@@ -351,12 +349,11 @@ class _EnhancedMoodTrackerScreenState extends State<EnhancedMoodTrackerScreen>
           itemBuilder: (context, index) {
             final mood = MoodType.values[index];
             final isSelected = _selectedMood == mood;
-
             return AnimatedBuilder(
               animation: _moodAnimations[index],
               builder: (context, child) {
                 return Transform.scale(
-                  scale: _moodAnimations[index].value,
+                  scale: _moodAnimations[index].value.clamp(0.0, 1.0),
                   child: GestureDetector(
                     onTap: () {
                       setState(() {
