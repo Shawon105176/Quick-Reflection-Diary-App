@@ -3,9 +3,10 @@ import 'package:provider/provider.dart';
 import '../models/reflection_entry.dart';
 import '../services/storage_service.dart';
 import '../services/prompt_service.dart';
+import '../utils/safe_provider_base.dart';
 import 'package:uuid/uuid.dart';
 
-class ReflectionsProvider extends ChangeNotifier {
+class ReflectionsProvider extends SafeChangeNotifier {
   List<ReflectionEntry> _reflections = [];
   bool _isLoading = false;
   final Uuid _uuid = const Uuid();

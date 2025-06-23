@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import '../utils/safe_provider_base.dart';
 import '../providers/reflections_provider.dart';
 import '../models/reflection_entry.dart';
 import '../widgets/app_logo.dart';
@@ -17,7 +18,7 @@ class ModernHomeScreen extends StatefulWidget {
 }
 
 class _ModernHomeScreenState extends State<ModernHomeScreen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, SafeStateMixin {
   ReflectionEntry? _todayReflection;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -81,7 +82,7 @@ class _ModernHomeScreenState extends State<ModernHomeScreen>
       );
     }
 
-    setState(() {});
+    safeSetState(() {});
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -125,7 +126,7 @@ class _ModernHomeScreenState extends State<ModernHomeScreen>
       await provider.deleteReflection(_todayReflection!.id);
       _reflectionController.clear();
       _todayReflection = null;
-      setState(() {});
+      safeSetState(() {});
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import '../services/storage_service.dart';
+import '../utils/safe_provider_base.dart';
 
-class PremiumProvider extends ChangeNotifier {
+class PremiumProvider extends SafeChangeNotifier {
   bool _isPremium = false;
   bool _isLoading = false;
   List<ProductDetails> _products = [];

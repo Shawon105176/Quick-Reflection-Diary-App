@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/safe_provider_base.dart';
 import 'home_screen.dart';
 import 'calendar_screen.dart';
 import 'history_screen.dart';
@@ -12,7 +13,7 @@ class MainNavigation extends StatefulWidget {
   State<MainNavigation> createState() => _MainNavigationState();
 }
 
-class _MainNavigationState extends State<MainNavigation> {
+class _MainNavigationState extends State<MainNavigation> with SafeStateMixin {
   int _currentIndex = 0;
 
   final List<Widget> _screens = [
@@ -30,7 +31,7 @@ class _MainNavigationState extends State<MainNavigation> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (index) {
-          setState(() {
+          safeSetState(() {
             _currentIndex = index;
           });
         },

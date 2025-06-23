@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import '../models/goal_entry.dart';
 import '../providers/goals_provider.dart';
 import '../providers/premium_provider.dart';
+import '../utils/safe_provider_base.dart';
 
 class GoalsScreen extends StatefulWidget {
   const GoalsScreen({super.key});
@@ -14,7 +15,7 @@ class GoalsScreen extends StatefulWidget {
 }
 
 class _GoalsScreenState extends State<GoalsScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, SafeStateMixin {
   late TabController _tabController;
 
   @override
@@ -407,7 +408,7 @@ class _GoalsScreenState extends State<GoalsScreen>
                               }).toList(),
                           onChanged: (value) {
                             if (value != null) {
-                              setState(() => selectedCategory = value);
+                              safeSetState(() => selectedCategory = value);
                             }
                           },
                         ),
@@ -437,7 +438,7 @@ class _GoalsScreenState extends State<GoalsScreen>
                                     ),
                                   );
                                   if (date != null) {
-                                    setState(() => deadline = date);
+                                    safeSetState(() => deadline = date);
                                   }
                                 },
                                 icon: const Icon(Icons.edit),
@@ -445,7 +446,7 @@ class _GoalsScreenState extends State<GoalsScreen>
                               if (deadline != null)
                                 IconButton(
                                   onPressed:
-                                      () => setState(() => deadline = null),
+                                      () => safeSetState(() => deadline = null),
                                   icon: const Icon(Icons.clear),
                                 ),
                             ],
@@ -475,7 +476,7 @@ class _GoalsScreenState extends State<GoalsScreen>
                                 title: Text(milestone),
                                 trailing: IconButton(
                                   onPressed:
-                                      () => setState(
+                                      () => safeSetState(
                                         () => milestones.remove(milestone),
                                       ),
                                   icon: const Icon(Icons.delete),
@@ -539,7 +540,7 @@ class _GoalsScreenState extends State<GoalsScreen>
               FilledButton(
                 onPressed: () {
                   if (controller.text.trim().isNotEmpty) {
-                    setState(() => milestones.add(controller.text.trim()));
+                    safeSetState(() => milestones.add(controller.text.trim()));
                     Navigator.pop(context);
                   }
                 },

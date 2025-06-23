@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import '../models/goal_entry.dart';
 import '../services/storage_service.dart';
+import '../utils/safe_provider_base.dart';
 
-class GoalsProvider extends ChangeNotifier {
+class GoalsProvider extends SafeChangeNotifier {
   List<GoalEntry> _goals = [];
   bool _isLoading = false;
 

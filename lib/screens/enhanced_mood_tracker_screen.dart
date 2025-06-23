@@ -5,6 +5,7 @@ import '../providers/mood_provider.dart';
 import '../models/mood_entry.dart';
 import '../widgets/voice_note_widget.dart';
 import '../widgets/photo_attachment_widget.dart';
+import '../utils/safe_provider_base.dart';
 
 class EnhancedMoodTrackerScreen extends StatefulWidget {
   const EnhancedMoodTrackerScreen({super.key});
@@ -15,7 +16,7 @@ class EnhancedMoodTrackerScreen extends StatefulWidget {
 }
 
 class _EnhancedMoodTrackerScreenState extends State<EnhancedMoodTrackerScreen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, SafeStateMixin, SafeAnimationMixin {
   MoodType? _selectedMood;
   int _intensity = 3;
   final TextEditingController _notesController = TextEditingController();
@@ -43,35 +44,36 @@ class _EnhancedMoodTrackerScreenState extends State<EnhancedMoodTrackerScreen>
   ];
 
   final List<String> _selectedTriggers = [];
-
   @override
   void initState() {
     super.initState();
-
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
-
-    _moodAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
-    _moodAnimations = List.generate(MoodType.values.length, (index) {
-      final totalItems = MoodType.values.length;
-      final startTime = (index / totalItems * 0.6).clamp(0.0, 0.6);
-      final endTime = (startTime + 0.4).clamp(0.4, 1.0);
-
-      return Tween<double>(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(
-          parent: _moodAnimationController,
-          curve: Interval(startTime, endTime, curve: Curves.elasticOut),
-        ),
+    try {
+      _animationController = createSafeAnimationController(
+        duration: const Duration(milliseconds: 1200),
       );
-    });
 
-    _animationController.forward();
-    _moodAnimationController.forward();
+      _moodAnimationController = createSafeAnimationController(
+        duration: const Duration(milliseconds: 800),
+      );
+
+      _moodAnimations = List.generate(MoodType.values.length, (index) {
+        final totalItems = MoodType.values.length;
+        final startTime = (index / totalItems * 0.6).clamp(0.0, 0.6);
+        final endTime = (startTime + 0.4).clamp(0.4, 1.0);
+
+        return Tween<double>(begin: 0.0, end: 1.0).animate(
+          CurvedAnimation(
+            parent: _moodAnimationController,
+            curve: Interval(startTime, endTime, curve: Curves.elasticOut),
+          ),
+        );
+      });
+
+      _animationController.forward();
+      _moodAnimationController.forward();
+    } catch (e) {
+      debugPrint('Error initializing animation controllers: $e');
+    }
 
     _loadTodayMood();
   }
@@ -87,9 +89,8 @@ class _EnhancedMoodTrackerScreenState extends State<EnhancedMoodTrackerScreen>
   void _loadTodayMood() {
     final provider = Provider.of<MoodProvider>(context, listen: false);
     final todayMood = provider.getMoodForDate(DateTime.now());
-
     if (todayMood != null) {
-      setState(() {
+      safeSetState(() {
         _selectedMood = todayMood.mood;
         _intensity = todayMood.intensity;
         _notesController.text = todayMood.notes ?? '';
@@ -105,8 +106,7 @@ class _EnhancedMoodTrackerScreenState extends State<EnhancedMoodTrackerScreen>
       );
       return;
     }
-
-    setState(() {
+    safeSetState(() {
       _isLoading = true;
     });
 
@@ -149,7 +149,7 @@ class _EnhancedMoodTrackerScreenState extends State<EnhancedMoodTrackerScreen>
         );
       }
     } finally {
-      setState(() {
+      safeSetState(() {
         _isLoading = false;
       });
     }
@@ -249,7 +249,7 @@ class _EnhancedMoodTrackerScreenState extends State<EnhancedMoodTrackerScreen>
                   // Voice note
                   VoiceNoteWidget(
                     onVoiceNoteChanged: (path) {
-                      setState(() {
+                      safeSetState(() {
                         _voiceNotePath = path;
                       });
                     },
@@ -260,7 +260,7 @@ class _EnhancedMoodTrackerScreenState extends State<EnhancedMoodTrackerScreen>
                   // Photo attachments
                   PhotoAttachmentWidget(
                     onPhotosChanged: (photos) {
-                      setState(() {
+                      safeSetState(() {
                         _photos = photos;
                       });
                     },
@@ -356,7 +356,7 @@ class _EnhancedMoodTrackerScreenState extends State<EnhancedMoodTrackerScreen>
                   scale: _moodAnimations[index].value.clamp(0.0, 1.0),
                   child: GestureDetector(
                     onTap: () {
-                      setState(() {
+                      safeSetState(() {
                         _selectedMood = mood;
                       });
                     },
@@ -484,7 +484,7 @@ class _EnhancedMoodTrackerScreenState extends State<EnhancedMoodTrackerScreen>
                   max: 5,
                   divisions: 4,
                   onChanged: (value) {
-                    setState(() {
+                    safeSetState(() {
                       _intensity = value.round();
                     });
                   },
@@ -530,7 +530,7 @@ class _EnhancedMoodTrackerScreenState extends State<EnhancedMoodTrackerScreen>
                   label: Text(trigger),
                   selected: isSelected,
                   onSelected: (selected) {
-                    setState(() {
+                    safeSetState(() {
                       if (selected) {
                         _selectedTriggers.add(trigger);
                       } else {

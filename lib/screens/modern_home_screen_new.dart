@@ -8,6 +8,7 @@ import '../widgets/stats_card_widget.dart';
 import '../widgets/quick_mood_selector.dart';
 import '../widgets/daily_inspiration.dart';
 import '../widgets/recent_reflections.dart';
+import '../utils/safe_provider_base.dart';
 import 'enhanced_reflection_screen.dart';
 
 class ModernHomeScreen extends StatefulWidget {
@@ -18,7 +19,7 @@ class ModernHomeScreen extends StatefulWidget {
 }
 
 class _ModernHomeScreenState extends State<ModernHomeScreen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, SafeStateMixin, SafeAnimationMixin {
   ReflectionEntry? _todayReflection;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -66,7 +67,7 @@ class _ModernHomeScreenState extends State<ModernHomeScreen>
     if (result == true) {
       // Refresh the reflection data
       _loadTodayReflection();
-      setState(() {});
+      safeSetState(() {});
     }
   }
 

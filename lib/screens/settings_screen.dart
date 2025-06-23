@@ -8,8 +8,22 @@ import '../services/notification_service.dart';
 import '../services/storage_service.dart';
 import '../screens/goals_screen.dart';
 import '../screens/icon_generator_screen.dart';
+import '../screens/wellness_toolkit_screen.dart';
 import '../screens/theme_selection_screen.dart';
 import '../screens/user_profile_setup_screen.dart';
+import '../screens/journal_cover_screen.dart';
+import '../screens/daily_wellness_screen.dart';
+import '../screens/photo_reflection_screen.dart';
+import '../screens/ai_companion_screen.dart';
+import '../screens/life_events_timeline_screen.dart';
+import '../screens/mental_health_score_screen.dart';
+import '../screens/reflection_library_screen.dart';
+import '../screens/journal_vault_screen.dart';
+import '../screens/daily_mood_weather_screen.dart';
+import '../screens/night_mode_timer_screen.dart';
+import '../screens/affirmation_garden_screen.dart';
+import '../screens/anonymous_reflection_community_screen.dart';
+import '../screens/stealth_mode_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -370,6 +384,293 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     );
                   },
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Wellness Features section
+              _buildSectionHeader('Wellness Features', Icons.spa),
+              Card(
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: Icon(
+                        Icons.auto_awesome,
+                        color: theme.colorScheme.primary,
+                      ),
+                      title: const Text('Journal Covers'),
+                      subtitle: const Text(
+                        'Personalize your journal with custom covers',
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const CoverSelectionScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1),
+                    ListTile(
+                      leading: Icon(
+                        Icons.air,
+                        color: theme.colorScheme.primary,
+                      ),
+                      title: const Text('Daily Wellness'),
+                      subtitle: const Text(
+                        'Quotes, breathing exercises & mindfulness',
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DailyWellnessScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1),
+                    ListTile(
+                      leading: Icon(
+                        Icons.photo_camera,
+                        color: theme.colorScheme.primary,
+                      ),
+                      title: const Text('Photo Reflections'),
+                      subtitle: const Text('Express emotions through images'),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PhotoReflectionScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1),
+                    ListTile(
+                      leading: Icon(
+                        Icons.self_improvement,
+                        color: theme.colorScheme.primary,
+                      ),
+                      title: const Text('Wellness Toolkit'),
+                      subtitle: const Text(
+                        'Gratitude, affirmations & stress tracking',
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => ChangeNotifierProvider(
+                                  create: (_) => WellnessToolkitProvider(),
+                                  child: const WellnessToolkitScreen(),
+                                ),
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1),
+                    // Advanced Premium Features
+                    ListTile(
+                      leading: Icon(
+                        Icons.psychology,
+                        color: theme.colorScheme.primary,
+                      ),
+                      title: const Text('AI Journal Companion'),
+                      subtitle: const Text(
+                        'Conversational AI for mental support',
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => ChangeNotifierProvider(
+                                  create: (_) => AIJournalProvider(),
+                                  child: const AIJournalCompanionScreen(),
+                                ),
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1),
+                    ListTile(
+                      leading: Icon(
+                        Icons.timeline,
+                        color: theme.colorScheme.primary,
+                      ),
+                      title: const Text('Life Events Timeline'),
+                      subtitle: const Text('Chronicle your milestone memories'),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => const LifeEventsTimelineScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1),
+                    ListTile(
+                      leading: Icon(
+                        Icons.favorite_border,
+                        color: theme.colorScheme.primary,
+                      ),
+                      title: const Text('Mental Health Score'),
+                      subtitle: const Text('AI-powered wellness analysis'),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => const MentalHealthScoreScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1),
+                    ListTile(
+                      leading: Icon(
+                        Icons.library_books,
+                        color: theme.colorScheme.primary,
+                      ),
+                      title: const Text('Reflection Library'),
+                      subtitle: const Text('Guided topics for deep thinking'),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => const ReflectionLibraryScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1),
+                    ListTile(
+                      leading: Icon(
+                        Icons.auto_stories,
+                        color: theme.colorScheme.primary,
+                      ),
+                      title: const Text('Journal Vault'),
+                      subtitle: const Text('Export to beautiful books'),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const JournalVaultScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1),
+                    ListTile(
+                      leading: Icon(
+                        Icons.wb_sunny,
+                        color: theme.colorScheme.primary,
+                      ),
+                      title: const Text('Daily Mood + Weather'),
+                      subtitle: const Text('Track mood patterns with weather'),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => const DailyMoodWeatherWidget(),
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1),
+                    ListTile(
+                      leading: Icon(
+                        Icons.nightlight_round,
+                        color: theme.colorScheme.primary,
+                      ),
+                      title: const Text('Night Mode Timer'),
+                      subtitle: const Text('Auto dark mode for better sleep'),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const NightModeTimerScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1),
+                    ListTile(
+                      leading: Icon(
+                        Icons.local_florist,
+                        color: theme.colorScheme.primary,
+                      ),
+                      title: const Text('Affirmation Garden'),
+                      subtitle: const Text(
+                        'Grow positivity with daily affirmations',
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => const AffirmationGardenScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1),
+                    ListTile(
+                      leading: Icon(
+                        Icons.groups,
+                        color: theme.colorScheme.primary,
+                      ),
+                      title: const Text('Anonymous Community'),
+                      subtitle: const Text('Share reflections anonymously'),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) =>
+                                    const AnonymousReflectionCommunityScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1),
+                    ListTile(
+                      leading: Icon(
+                        Icons.security,
+                        color: theme.colorScheme.primary,
+                      ),
+                      title: const Text('Stealth Mode'),
+                      subtitle: const Text('Advanced privacy & security'),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const StealthModeScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
             ],

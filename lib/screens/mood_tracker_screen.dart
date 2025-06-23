@@ -6,6 +6,8 @@ import 'package:uuid/uuid.dart';
 import '../models/mood_entry.dart';
 import '../providers/mood_provider.dart';
 import '../providers/premium_provider.dart';
+import '../widgets/app_error_boundary.dart';
+import '../utils/safe_provider_base.dart';
 
 class MoodTrackerScreen extends StatefulWidget {
   const MoodTrackerScreen({super.key});
@@ -15,59 +17,70 @@ class MoodTrackerScreen extends StatefulWidget {
 }
 
 class _MoodTrackerScreenState extends State<MoodTrackerScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, SafeStateMixin {
   late TabController _tabController;
   DateTime _selectedDate = DateTime.now();
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    try {
+      _tabController = TabController(length: 3, vsync: this);
+    } catch (e) {
+      debugPrint('Error initializing TabController: $e');
+    }
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
+    try {
+      _tabController.dispose();
+    } catch (e) {
+      debugPrint('Error disposing TabController: $e');
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PremiumProvider>(
-      builder: (context, premiumProvider, child) {
-        if (!premiumProvider.canUseMoodTracking) {
+    return AppErrorBoundary(
+      screenName: 'Mood Tracker',
+      child: SafeConsumer<PremiumProvider>(
+        builder: (context, premiumProvider, child) {
+          if (!premiumProvider.canUseMoodTracking) {
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text('Mood Tracker'),
+                centerTitle: true,
+              ),
+              body: _buildPremiumRequired(context, premiumProvider),
+            );
+          }
+
           return Scaffold(
             appBar: AppBar(
               title: const Text('Mood Tracker'),
               centerTitle: true,
+              bottom: TabBar(
+                controller: _tabController,
+                tabs: const [
+                  Tab(text: 'Today', icon: Icon(Icons.today)),
+                  Tab(text: 'Analytics', icon: Icon(Icons.analytics)),
+                  Tab(text: 'History', icon: Icon(Icons.history)),
+                ],
+              ),
             ),
-            body: _buildPremiumRequired(context, premiumProvider),
-          );
-        }
-
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('Mood Tracker'),
-            centerTitle: true,
-            bottom: TabBar(
+            body: TabBarView(
               controller: _tabController,
-              tabs: const [
-                Tab(text: 'Today', icon: Icon(Icons.today)),
-                Tab(text: 'Analytics', icon: Icon(Icons.analytics)),
-                Tab(text: 'History', icon: Icon(Icons.history)),
+              children: [
+                _buildTodayTab(),
+                _buildAnalyticsTab(),
+                _buildHistoryTab(),
               ],
             ),
-          ),
-          body: TabBarView(
-            controller: _tabController,
-            children: [
-              _buildTodayTab(),
-              _buildAnalyticsTab(),
-              _buildHistoryTab(),
-            ],
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
@@ -173,7 +186,7 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen>
                   lastDate: DateTime.now(),
                 );
                 if (date != null) {
-                  setState(() {
+                  safeSetState(() {
                     _selectedDate = date;
                   });
                 }
@@ -273,7 +286,7 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen>
                         children: List.generate(5, (index) {
                           final value = index + 1;
                           return GestureDetector(
-                            onTap: () => setState(() => intensity = value),
+                            onTap: () => safeSetState(() => intensity = value),
                             child: Container(
                               width: 40,
                               height: 40,

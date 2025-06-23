@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:local_auth/local_auth.dart';
 import '../services/auth_service.dart';
 import '../providers/theme_provider.dart';
+import '../utils/safe_provider_base.dart';
 import 'main_navigation.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -12,7 +13,7 @@ class AuthScreen extends StatefulWidget {
   State<AuthScreen> createState() => _AuthScreenState();
 }
 
-class _AuthScreenState extends State<AuthScreen> {
+class _AuthScreenState extends State<AuthScreen> with SafeStateMixin {
   final TextEditingController _pinController = TextEditingController();
   bool _isLoading = false;
   String _errorMessage = '';
@@ -45,7 +46,7 @@ class _AuthScreenState extends State<AuthScreen> {
     if (_pinController.text == settings.pinCode) {
       _navigateToMain();
     } else {
-      setState(() {
+      safeSetState(() {
         _errorMessage = 'Incorrect PIN. Please try again.';
       });
       _pinController.clear();
@@ -53,7 +54,7 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   Future<void> _retryBiometric() async {
-    setState(() {
+    safeSetState(() {
       _isLoading = true;
       _errorMessage = '';
     });
@@ -62,12 +63,12 @@ class _AuthScreenState extends State<AuthScreen> {
     if (authenticated && mounted) {
       _navigateToMain();
     } else {
-      setState(() {
+      safeSetState(() {
         _errorMessage = 'Authentication failed. Please try again.';
       });
     }
 
-    setState(() {
+    safeSetState(() {
       _isLoading = false;
     });
   }

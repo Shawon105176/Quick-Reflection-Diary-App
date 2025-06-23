@@ -5,6 +5,7 @@ import '../providers/reflections_provider.dart';
 import '../models/reflection_entry.dart';
 import '../widgets/voice_note_widget.dart';
 import '../widgets/photo_attachment_widget.dart';
+import '../utils/safe_provider_base.dart';
 
 class EnhancedReflectionScreen extends StatefulWidget {
   final ReflectionEntry? existingReflection;
@@ -22,7 +23,7 @@ class EnhancedReflectionScreen extends StatefulWidget {
 }
 
 class _EnhancedReflectionScreenState extends State<EnhancedReflectionScreen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, SafeStateMixin, SafeAnimationMixin {
   final TextEditingController _reflectionController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   String? _voiceNotePath;
@@ -50,7 +51,6 @@ class _EnhancedReflectionScreenState extends State<EnhancedReflectionScreen>
 
   String _selectedPrompt = '';
   int _wordCount = 0;
-
   @override
   void initState() {
     super.initState();
@@ -65,41 +65,44 @@ class _EnhancedReflectionScreenState extends State<EnhancedReflectionScreen>
   void dispose() {
     _reflectionController.dispose();
     _focusNode.dispose();
-    _animationController.dispose();
-    _writeAnimationController.dispose();
     super.dispose();
   }
 
   void _setupAnimations() {
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
+    try {
+      _animationController = createSafeAnimationController(
+        duration: const Duration(milliseconds: 1200),
+      );
 
-    _writeAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 2000),
-      vsync: this,
-    );
+      _writeAnimationController = createSafeAnimationController(
+        duration: const Duration(milliseconds: 2000),
+      );
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
-    );
+      _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+      );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic),
-    );
+      _slideAnimation = Tween<Offset>(
+        begin: const Offset(0, 0.3),
+        end: Offset.zero,
+      ).animate(
+        CurvedAnimation(
+          parent: _animationController,
+          curve: Curves.easeOutCubic,
+        ),
+      );
 
-    _writeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _writeAnimationController,
-        curve: Curves.easeInOut,
-      ),
-    );
+      _writeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(
+          parent: _writeAnimationController,
+          curve: Curves.easeInOut,
+        ),
+      );
 
-    _animationController.forward();
+      _animationController.forward();
+    } catch (e) {
+      debugPrint('Error setting up animations: $e');
+    }
   }
 
   void _loadExistingData() {
@@ -117,7 +120,7 @@ class _EnhancedReflectionScreenState extends State<EnhancedReflectionScreen>
   void _updateWordCount() {
     final text = _reflectionController.text;
     final words = text.trim().split(RegExp(r'\s+'));
-    setState(() {
+    safeSetState(() {
       _wordCount = text.trim().isEmpty ? 0 : words.length;
     });
 
@@ -138,7 +141,7 @@ class _EnhancedReflectionScreenState extends State<EnhancedReflectionScreen>
       return;
     }
 
-    setState(() {
+    safeSetState(() {
       _isLoading = true;
     });
 
@@ -185,7 +188,7 @@ class _EnhancedReflectionScreenState extends State<EnhancedReflectionScreen>
         );
       }
     } finally {
-      setState(() {
+      safeSetState(() {
         _isLoading = false;
       });
     }
@@ -301,7 +304,7 @@ class _EnhancedReflectionScreenState extends State<EnhancedReflectionScreen>
                     position: _slideAnimation,
                     child: VoiceNoteWidget(
                       onVoiceNoteChanged: (path) {
-                        setState(() {
+                        safeSetState(() {
                           _voiceNotePath = path;
                         });
                       },
@@ -314,7 +317,7 @@ class _EnhancedReflectionScreenState extends State<EnhancedReflectionScreen>
                     position: _slideAnimation,
                     child: PhotoAttachmentWidget(
                       onPhotosChanged: (photos) {
-                        setState(() {
+                        safeSetState(() {
                           _photos = photos;
                         });
                       },
@@ -380,7 +383,7 @@ class _EnhancedReflectionScreenState extends State<EnhancedReflectionScreen>
               IconButton(
                 icon: const Icon(Icons.refresh, size: 20),
                 onPressed: () {
-                  setState(() {
+                  safeSetState(() {
                     _selectRandomPrompt();
                   });
                 },
@@ -472,7 +475,7 @@ class _EnhancedReflectionScreenState extends State<EnhancedReflectionScreen>
               style: const TextStyle(fontSize: 16, height: 1.6),
               textInputAction: TextInputAction.newline,
               onChanged: (text) {
-                setState(() {
+                safeSetState(() {
                   // This will trigger _updateWordCount via the listener
                 });
               },

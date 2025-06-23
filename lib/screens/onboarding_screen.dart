@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:introduction_screen/introduction_screen.dart';
-import 'package:lottie/lottie.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import '../utils/safe_provider_base.dart';
 import '../providers/theme_provider.dart';
-import '../services/storage_service.dart';
-import '../models/app_settings.dart';
-import '../widgets/app_logo.dart';
 import 'main_navigation.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -16,7 +11,8 @@ class OnboardingScreen extends StatefulWidget {
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends State<OnboardingScreen>
+    with SafeStateMixin {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
@@ -65,7 +61,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: PageView.builder(
                 controller: _pageController,
                 onPageChanged: (index) {
-                  setState(() {
+                  safeSetState(() {
                     _currentPage = index;
                   });
                 },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import '../utils/safe_provider_base.dart';
 import '../providers/reflections_provider.dart';
 import '../models/reflection_entry.dart';
 
@@ -18,7 +19,8 @@ class ReflectionDetailScreen extends StatefulWidget {
   State<ReflectionDetailScreen> createState() => _ReflectionDetailScreenState();
 }
 
-class _ReflectionDetailScreenState extends State<ReflectionDetailScreen> {
+class _ReflectionDetailScreenState extends State<ReflectionDetailScreen>
+    with SafeStateMixin {
   late TextEditingController _reflectionController;
   bool _isEditing = false;
   bool _hasChanges = false;
@@ -38,7 +40,7 @@ class _ReflectionDetailScreenState extends State<ReflectionDetailScreen> {
     final hasChanges =
         _reflectionController.text != (widget.reflection?.reflection ?? '');
     if (hasChanges != _hasChanges) {
-      setState(() {
+      safeSetState(() {
         _hasChanges = hasChanges;
       });
     }
@@ -76,7 +78,7 @@ class _ReflectionDetailScreenState extends State<ReflectionDetailScreen> {
         );
       }
 
-      setState(() {
+      safeSetState(() {
         _isEditing = false;
         _hasChanges = false;
       });
@@ -186,7 +188,7 @@ class _ReflectionDetailScreenState extends State<ReflectionDetailScreen> {
             if (widget.reflection != null && !_isEditing)
               IconButton(
                 onPressed: () {
-                  setState(() {
+                  safeSetState(() {
                     _isEditing = true;
                   });
                 },
@@ -326,7 +328,7 @@ class _ReflectionDetailScreenState extends State<ReflectionDetailScreen> {
                             if (widget.reflection != null)
                               TextButton(
                                 onPressed: () {
-                                  setState(() {
+                                  safeSetState(() {
                                     _isEditing = false;
                                     _reflectionController.text =
                                         widget.reflection!.reflection;

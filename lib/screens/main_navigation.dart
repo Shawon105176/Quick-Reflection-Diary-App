@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import '../utils/safe_provider_base.dart';
 import 'modern_home_screen.dart';
 import 'calendar_screen.dart';
 import 'enhanced_mood_tracker_screen.dart';
@@ -16,7 +17,7 @@ class MainNavigation extends StatefulWidget {
 }
 
 class _MainNavigationState extends State<MainNavigation>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, SafeStateMixin, SafeAnimationMixin {
   int _currentIndex = 0;
   late AnimationController _iconAnimationController;
   late AnimationController _pulseAnimationController;
@@ -42,52 +43,54 @@ class _MainNavigationState extends State<MainNavigation>
     Icons.search_rounded,
     Icons.settings_rounded,
   ];
-
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: _currentIndex);
 
-    // Icon scaling animation
-    _iconAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 350),
-      vsync: this,
-    );
+    try {
+      // Icon scaling animation
+      _iconAnimationController = createSafeAnimationController(
+        duration: const Duration(milliseconds: 350),
+      );
 
-    // Pulse animation for selected icon
-    _pulseAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
-    // Bounce animation for tap feedback
-    _bounceAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
+      // Pulse animation for selected icon
+      _pulseAnimationController = createSafeAnimationController(
+        duration: const Duration(milliseconds: 1200),
+      );
 
-    _iconScaleAnimation = Tween<double>(begin: 0.8, end: 1.2).animate(
-      CurvedAnimation(
-        parent: _iconAnimationController,
-        curve: Curves.elasticOut,
-      ),
-    );
+      // Bounce animation for tap feedback
+      _bounceAnimationController = createSafeAnimationController(
+        duration: const Duration(milliseconds: 200),
+      );
 
-    _pulseAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _pulseAnimationController,
-        curve: Curves.easeInOut,
-      ),
-    );
-    _bounceAnimation = Tween<double>(begin: 1.0, end: 0.9).animate(
-      CurvedAnimation(
-        parent: _bounceAnimationController,
-        curve: Curves.easeInOut,
-      ),
-    );
+      _iconScaleAnimation = Tween<double>(begin: 0.8, end: 1.2).animate(
+        CurvedAnimation(
+          parent: _iconAnimationController,
+          curve: Curves.elasticOut,
+        ),
+      );
 
-    // Start initial animations
-    _iconAnimationController.forward();
-    _startPulseAnimation();
+      _pulseAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(
+          parent: _pulseAnimationController,
+          curve: Curves.easeInOut,
+        ),
+      );
+
+      _bounceAnimation = Tween<double>(begin: 1.0, end: 0.9).animate(
+        CurvedAnimation(
+          parent: _bounceAnimationController,
+          curve: Curves.easeInOut,
+        ),
+      );
+
+      // Start initial animations
+      _iconAnimationController.forward();
+      _startPulseAnimation();
+    } catch (e) {
+      debugPrint('Error initializing animations: $e');
+    }
   }
 
   void _startPulseAnimation() {
@@ -96,9 +99,6 @@ class _MainNavigationState extends State<MainNavigation>
 
   @override
   void dispose() {
-    _iconAnimationController.dispose();
-    _pulseAnimationController.dispose();
-    _bounceAnimationController.dispose();
     _pageController.dispose();
     super.dispose();
   }
@@ -126,7 +126,7 @@ class _MainNavigationState extends State<MainNavigation>
         curve: Curves.easeInOutCubic,
       );
 
-      setState(() {
+      safeSetState(() {
         _currentIndex = index;
       });
     }
@@ -145,7 +145,7 @@ class _MainNavigationState extends State<MainNavigation>
             controller: _pageController,
             children: _screens,
             onPageChanged: (index) {
-              setState(() {
+              safeSetState(() {
                 _currentIndex = index;
               });
               _iconAnimationController.reset();

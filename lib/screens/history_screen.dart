@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../providers/reflections_provider.dart';
 import '../models/reflection_entry.dart';
+import '../utils/safe_provider_base.dart';
 import 'reflection_detail_screen.dart';
 
 class HistoryScreen extends StatefulWidget {
@@ -12,7 +13,7 @@ class HistoryScreen extends StatefulWidget {
   State<HistoryScreen> createState() => _HistoryScreenState();
 }
 
-class _HistoryScreenState extends State<HistoryScreen> {
+class _HistoryScreenState extends State<HistoryScreen> with SafeStateMixin {
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
 
@@ -44,7 +45,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         ? IconButton(
                           onPressed: () {
                             _searchController.clear();
-                            setState(() {
+                            safeSetState(() {
                               _searchQuery = '';
                             });
                           },
@@ -56,7 +57,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 ),
               ),
               onChanged: (value) {
-                setState(() {
+                safeSetState(() {
                   _searchQuery = value.toLowerCase();
                 });
               },

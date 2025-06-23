@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../services/storage_service.dart';
 import '../models/app_settings.dart';
+import '../utils/safe_provider_base.dart';
 
 enum AppTheme {
   mindfulPurple,
@@ -12,7 +13,7 @@ enum AppTheme {
   charcoalDark,
 }
 
-class ThemeProvider extends ChangeNotifier {
+class ThemeProvider extends SafeChangeNotifier {
   AppSettings _settings = AppSettings();
   AppTheme _currentTheme = AppTheme.mindfulPurple;
 

@@ -4,10 +4,7 @@ import 'package:intl/intl.dart';
 import '../providers/reflections_provider.dart';
 import '../models/reflection_entry.dart';
 import '../widgets/app_logo.dart';
-import '../widgets/stats_card_widget.dart';
-import '../widgets/quick_mood_selector.dart';
-import '../widgets/daily_inspiration.dart';
-import '../widgets/recent_reflections.dart';
+import '../utils/safe_provider_base.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,7 +13,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with SafeStateMixin {
   final TextEditingController _reflectionController = TextEditingController();
   bool _isEditing = false;
   ReflectionEntry? _todayReflection;
@@ -61,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       }
 
-      setState(() {
+      safeSetState(() {
         _isEditing = false;
       });
 
@@ -200,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           if (_todayReflection != null && !_isEditing)
                             IconButton(
                               onPressed: () {
-                                setState(() {
+                                safeSetState(() {
                                   _isEditing = true;
                                 });
                               },
@@ -228,7 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             if (_isEditing) ...[
                               TextButton(
                                 onPressed: () {
-                                  setState(() {
+                                  safeSetState(() {
                                     _isEditing = false;
                                     if (_todayReflection != null) {
                                       _reflectionController.text =

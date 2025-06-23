@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../utils/safe_provider_base.dart';
 import '../providers/user_provider.dart';
 
 class UserProfileSetupScreen extends StatefulWidget {
@@ -10,7 +11,7 @@ class UserProfileSetupScreen extends StatefulWidget {
 }
 
 class _UserProfileSetupScreenState extends State<UserProfileSetupScreen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, SafeStateMixin {
   final TextEditingController _nameController = TextEditingController();
   final FocusNode _nameFocus = FocusNode();
   late AnimationController _animationController;
@@ -66,7 +67,7 @@ class _UserProfileSetupScreenState extends State<UserProfileSetupScreen>
       return;
     }
 
-    setState(() {
+    safeSetState(() {
       _isLoading = true;
     });
 
@@ -96,7 +97,7 @@ class _UserProfileSetupScreenState extends State<UserProfileSetupScreen>
       }
     } finally {
       if (mounted) {
-        setState(() {
+        safeSetState(() {
           _isLoading = false;
         });
       }

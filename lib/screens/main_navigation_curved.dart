@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import '../utils/safe_provider_base.dart';
 import 'modern_home_screen.dart';
 import 'calendar_screen.dart';
 import 'enhanced_mood_tracker_screen.dart';
@@ -16,7 +17,7 @@ class MainNavigation extends StatefulWidget {
 }
 
 class _MainNavigationState extends State<MainNavigation>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, SafeStateMixin {
   int _currentIndex = 0;
   late AnimationController _fabAnimationController;
   late Animation<double> _fabScaleAnimation;
@@ -84,7 +85,7 @@ class _MainNavigationState extends State<MainNavigation>
         curve: Curves.easeInOut,
       );
 
-      setState(() {
+      safeSetState(() {
         _currentIndex = index;
       });
     }
@@ -99,7 +100,7 @@ class _MainNavigationState extends State<MainNavigation>
         controller: _pageController,
         children: _screens,
         onPageChanged: (index) {
-          setState(() {
+          safeSetState(() {
             _currentIndex = index;
           });
           _fabAnimationController.reset();

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
+import '../utils/safe_provider_base.dart';
 
 class PhotoAttachmentWidget extends StatefulWidget {
   final Function(List<String>) onPhotosChanged;
@@ -16,7 +16,7 @@ class PhotoAttachmentWidget extends StatefulWidget {
 }
 
 class _PhotoAttachmentWidgetState extends State<PhotoAttachmentWidget>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, SafeStateMixin {
   List<String> _photos = [];
   late AnimationController _animationController;
 
@@ -134,7 +134,7 @@ class _PhotoAttachmentWidgetState extends State<PhotoAttachmentWidget>
       final String imagePath =
           'path/to/image_${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-      setState(() {
+      safeSetState(() {
         _photos.add(imagePath);
       });
 
@@ -153,7 +153,7 @@ class _PhotoAttachmentWidgetState extends State<PhotoAttachmentWidget>
       //   imageQuality: 85,
       // );
       // if (image != null) {
-      //   setState(() {
+      //   safeSetState(() {
       //     _photos.add(image.path);
       //   });
       //   widget.onPhotosChanged(_photos);
@@ -169,7 +169,7 @@ class _PhotoAttachmentWidgetState extends State<PhotoAttachmentWidget>
   }
 
   void _removePhoto(int index) {
-    setState(() {
+    safeSetState(() {
       _photos.removeAt(index);
     });
     widget.onPhotosChanged(_photos);

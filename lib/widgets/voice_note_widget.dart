@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
-import 'dart:typed_data';
+import '../utils/safe_provider_base.dart';
 
 class VoiceNoteWidget extends StatefulWidget {
   final Function(String?) onVoiceNoteChanged;
@@ -17,12 +16,11 @@ class VoiceNoteWidget extends StatefulWidget {
 }
 
 class _VoiceNoteWidgetState extends State<VoiceNoteWidget>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, SafeStateMixin, SafeAnimationMixin {
   bool _isRecording = false;
   bool _isPlaying = false;
   bool _hasRecording = false;
   Duration _recordDuration = Duration.zero;
-  Duration _playDuration = Duration.zero;
   String? _voicePath;
 
   late AnimationController _pulseController;
@@ -72,7 +70,7 @@ class _VoiceNoteWidgetState extends State<VoiceNoteWidget>
     Future.doWhile(() async {
       await Future.delayed(const Duration(milliseconds: 100));
       if (_isRecording && _recordStartTime != null) {
-        setState(() {
+        safeSetState(() {
           _recordDuration = DateTime.now().difference(_recordStartTime!);
         });
       }
@@ -82,7 +80,7 @@ class _VoiceNoteWidgetState extends State<VoiceNoteWidget>
 
   Future<void> _startRecording() async {
     try {
-      setState(() {
+      safeSetState(() {
         _isRecording = true;
         _recordStartTime = DateTime.now();
         _recordDuration = Duration.zero;
@@ -102,7 +100,7 @@ class _VoiceNoteWidgetState extends State<VoiceNoteWidget>
 
   Future<void> _stopRecording() async {
     try {
-      setState(() {
+      safeSetState(() {
         _isRecording = false;
         _hasRecording = true;
         _recordStartTime = null;
@@ -127,9 +125,9 @@ class _VoiceNoteWidgetState extends State<VoiceNoteWidget>
     if (_voicePath == null) return;
 
     try {
-      setState(() {
+      safeSetState(() {
         _isPlaying = true;
-        _playDuration = Duration.zero;
+        _recordDuration = Duration.zero;
       });
 
       _waveController.repeat(reverse: true);
@@ -141,14 +139,14 @@ class _VoiceNoteWidgetState extends State<VoiceNoteWidget>
       // Simulate 3-second playback
       await Future.delayed(const Duration(seconds: 3));
 
-      setState(() {
+      safeSetState(() {
         _isPlaying = false;
       });
 
       _waveController.stop();
     } catch (e) {
       debugPrint('Error playing recording: $e');
-      setState(() {
+      safeSetState(() {
         _isPlaying = false;
       });
       _waveController.stop();
@@ -156,11 +154,10 @@ class _VoiceNoteWidgetState extends State<VoiceNoteWidget>
   }
 
   Future<void> _deleteRecording() async {
-    setState(() {
+    safeSetState(() {
       _hasRecording = false;
       _voicePath = null;
       _recordDuration = Duration.zero;
-      _playDuration = Duration.zero;
     });
 
     widget.onVoiceNoteChanged(null);

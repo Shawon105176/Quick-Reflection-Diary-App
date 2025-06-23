@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import '../models/app_settings.dart';
 import '../services/storage_service.dart';
+import '../utils/safe_provider_base.dart';
 
-class UserProvider with ChangeNotifier {
+class UserProvider extends SafeChangeNotifier {
   AppSettings _settings = AppSettings();
 
   AppSettings get settings => _settings;

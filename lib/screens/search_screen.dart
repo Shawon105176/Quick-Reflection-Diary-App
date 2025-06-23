@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../utils/safe_provider_base.dart';
 import '../providers/reflections_provider.dart';
 import '../providers/mood_provider.dart';
 import '../providers/goals_provider.dart';
@@ -14,7 +15,7 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, SafeStateMixin {
   final TextEditingController _searchController = TextEditingController();
   List<dynamic> _searchResults = [];
   bool _isLoading = false;
@@ -46,13 +47,13 @@ class _SearchScreenState extends State<SearchScreen>
 
   void _performSearch(String query) async {
     if (query.trim().isEmpty) {
-      setState(() {
+      safeSetState(() {
         _searchResults.clear();
       });
       return;
     }
 
-    setState(() {
+    safeSetState(() {
       _isLoading = true;
     });
 
@@ -135,7 +136,7 @@ class _SearchScreenState extends State<SearchScreen>
       return dateB.compareTo(dateA);
     });
 
-    setState(() {
+    safeSetState(() {
       _searchResults = results;
       _isLoading = false;
     });
@@ -211,7 +212,7 @@ class _SearchScreenState extends State<SearchScreen>
                       label: Text(filter),
                       selected: isSelected,
                       onSelected: (selected) {
-                        setState(() {
+                        safeSetState(() {
                           _selectedFilter = filter;
                         });
                         _performSearch(_searchController.text);

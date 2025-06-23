@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../utils/safe_provider_base.dart';
 import 'modern_home_screen.dart';
 import 'calendar_screen.dart';
 import 'enhanced_mood_tracker_screen.dart';
@@ -15,7 +16,7 @@ class MainNavigation extends StatefulWidget {
 }
 
 class _MainNavigationState extends State<MainNavigation>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, SafeStateMixin, SafeAnimationMixin {
   int _currentIndex = 0;
   late Map<int, AnimationController> _iconControllers;
   late AnimationController _navigationBarController;
@@ -113,7 +114,7 @@ class _MainNavigationState extends State<MainNavigation>
         _navigationBarController.forward();
       });
 
-      setState(() {
+      safeSetState(() {
         _currentIndex = index;
       });
     }

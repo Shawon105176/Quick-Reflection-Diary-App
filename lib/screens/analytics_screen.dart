@@ -6,6 +6,7 @@ import '../providers/mood_provider.dart';
 import '../providers/reflections_provider.dart';
 import '../providers/goals_provider.dart';
 import '../models/mood_entry.dart';
+import '../utils/safe_provider_base.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
@@ -15,7 +16,7 @@ class AnalyticsScreen extends StatefulWidget {
 }
 
 class _AnalyticsScreenState extends State<AnalyticsScreen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, SafeStateMixin {
   String _selectedPeriod = 'Week';
   final List<String> _periods = ['Week', 'Month', '3 Months', 'Year'];
 
@@ -140,7 +141,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
               label: Text(period),
               selected: isSelected,
               onSelected: (selected) {
-                setState(() {
+                safeSetState(() {
                   _selectedPeriod = period;
                 });
               },

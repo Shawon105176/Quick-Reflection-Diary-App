@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/mood_provider.dart';
 import '../models/mood_entry.dart';
+import '../utils/safe_provider_base.dart';
 import 'package:uuid/uuid.dart';
 
 class QuickMoodSelector extends StatefulWidget {
@@ -12,7 +13,7 @@ class QuickMoodSelector extends StatefulWidget {
 }
 
 class _QuickMoodSelectorState extends State<QuickMoodSelector>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, SafeStateMixin, SafeAnimationMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
   MoodType? _selectedMood;
@@ -37,7 +38,7 @@ class _QuickMoodSelectorState extends State<QuickMoodSelector>
     final moodProvider = Provider.of<MoodProvider>(context, listen: false);
     final todaysMood = moodProvider.getMoodForDate(DateTime.now());
     if (todaysMood != null) {
-      setState(() {
+      safeSetState(() {
         _selectedMood = todaysMood.mood;
       });
     }
@@ -217,7 +218,7 @@ class _QuickMoodSelectorState extends State<QuickMoodSelector>
   }
 
   void _selectMood(MoodType mood) async {
-    setState(() {
+    safeSetState(() {
       _selectedMood = mood;
     });
 

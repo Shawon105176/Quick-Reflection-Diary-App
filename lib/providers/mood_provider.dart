@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import '../models/mood_entry.dart';
 import '../services/storage_service.dart';
+import '../utils/safe_provider_base.dart';
 
-class MoodProvider extends ChangeNotifier {
+class MoodProvider extends SafeChangeNotifier {
   List<MoodEntry> _moods = [];
   bool _isLoading = false;
 
