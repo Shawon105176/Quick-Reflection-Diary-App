@@ -161,6 +161,8 @@ class _JournalVaultScreenState extends State<JournalVaultScreen>
               children: [
                 _buildHeaderCard(context),
                 const SizedBox(height: 24),
+                _buildJournalCovers(context),
+                const SizedBox(height: 24),
                 _buildExportFormats(context),
                 const SizedBox(height: 24),
                 _buildPreviousExports(context),
@@ -242,6 +244,351 @@ class _JournalVaultScreenState extends State<JournalVaultScreen>
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildJournalCovers(BuildContext context) {
+    final theme = Theme.of(context);
+
+    // Mock journal covers data - in production, get from user's saved covers
+    final List<Map<String, dynamic>> journalCovers = [
+      {
+        'id': 1,
+        'title': 'My Daily Thoughts',
+        'color': Colors.blue,
+        'pattern': 'classic',
+        'icon': Icons.book,
+        'entryCount': 45,
+        'lastModified': DateTime.now().subtract(const Duration(days: 2)),
+      },
+      {
+        'id': 2,
+        'title': 'Travel Adventures',
+        'color': Colors.green,
+        'pattern': 'travel',
+        'icon': Icons.explore,
+        'entryCount': 23,
+        'lastModified': DateTime.now().subtract(const Duration(days: 5)),
+      },
+      {
+        'id': 3,
+        'title': 'Mindful Moments',
+        'color': Colors.purple,
+        'pattern': 'zen',
+        'icon': Icons.spa,
+        'entryCount': 67,
+        'lastModified': DateTime.now().subtract(const Duration(days: 1)),
+      },
+      {
+        'id': 4,
+        'title': 'Goals & Dreams',
+        'color': Colors.orange,
+        'pattern': 'motivational',
+        'icon': Icons.star,
+        'entryCount': 12,
+        'lastModified': DateTime.now().subtract(const Duration(days: 3)),
+      },
+      {
+        'id': 5,
+        'title': 'Gratitude Journal',
+        'color': Colors.pink,
+        'pattern': 'floral',
+        'icon': Icons.favorite,
+        'entryCount': 89,
+        'lastModified': DateTime.now().subtract(const Duration(hours: 6)),
+      },
+      {
+        'id': 6,
+        'title': 'Creative Ideas',
+        'color': Colors.teal,
+        'pattern': 'artistic',
+        'icon': Icons.palette,
+        'entryCount': 34,
+        'lastModified': DateTime.now().subtract(const Duration(days: 4)),
+      },
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Journal Covers',
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            TextButton.icon(
+              onPressed: () => _showCreateCoverDialog(context),
+              icon: const Icon(Icons.add),
+              label: const Text('Create New'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: 0.75,
+          ),
+          itemCount: journalCovers.length,
+          itemBuilder: (context, index) {
+            final cover = journalCovers[index];
+            return _buildJournalCoverCard(context, cover);
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildJournalCoverCard(
+    BuildContext context,
+    Map<String, dynamic> cover,
+  ) {
+    final theme = Theme.of(context);
+    final color = cover['color'] as Color;
+
+    return Card(
+      elevation: 4,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () => _openJournalCover(context, cover),
+        onLongPress: () => _showCoverOptions(context, cover),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [color.withOpacity(0.8), color.withOpacity(0.6)],
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(
+                      cover['icon'] as IconData,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        '${cover['entryCount']}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                Text(
+                  cover['title'],
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  _formatLastModified(cover['lastModified']),
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.8),
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  width: double.infinity,
+                  height: 2,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(1),
+                  ),
+                  child: FractionallySizedBox(
+                    alignment: Alignment.centerLeft,
+                    widthFactor: (cover['entryCount'] / 100).clamp(0.0, 1.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(1),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _formatLastModified(DateTime date) {
+    final now = DateTime.now();
+    final difference = now.difference(date);
+
+    if (difference.inDays > 0) {
+      return '${difference.inDays} days ago';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours} hours ago';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes} minutes ago';
+    } else {
+      return 'Just now';
+    }
+  }
+
+  void _openJournalCover(BuildContext context, Map<String, dynamic> cover) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => JournalCoverDetailScreen(cover: cover),
+      ),
+    );
+  }
+
+  void _showCoverOptions(BuildContext context, Map<String, dynamic> cover) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => _buildCoverOptionsSheet(context, cover),
+    );
+  }
+
+  Widget _buildCoverOptionsSheet(
+    BuildContext context,
+    Map<String, dynamic> cover,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            cover['title'],
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 20),
+          ListTile(
+            leading: const Icon(Icons.edit),
+            title: const Text('Edit Cover'),
+            onTap: () {
+              Navigator.pop(context);
+              _showEditCoverDialog(context, cover);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.share),
+            title: const Text('Export as Book'),
+            onTap: () {
+              Navigator.pop(context);
+              _showExportDialog(context, coverData: cover);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.copy),
+            title: const Text('Duplicate Cover'),
+            onTap: () {
+              Navigator.pop(context);
+              _duplicateCover(context, cover);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.delete, color: Colors.red),
+            title: const Text(
+              'Delete Cover',
+              style: TextStyle(color: Colors.red),
+            ),
+            onTap: () {
+              Navigator.pop(context);
+              _showDeleteCoverDialog(context, cover);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showCreateCoverDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => JournalCoverCreatorDialog(),
+    );
+  }
+
+  void _showEditCoverDialog(BuildContext context, Map<String, dynamic> cover) {
+    showDialog(
+      context: context,
+      builder: (context) => JournalCoverCreatorDialog(existingCover: cover),
+    );
+  }
+
+  void _duplicateCover(BuildContext context, Map<String, dynamic> cover) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${cover['title']} duplicated successfully!'),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  void _showDeleteCoverDialog(
+    BuildContext context,
+    Map<String, dynamic> cover,
+  ) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Delete Cover'),
+            content: Text(
+              'Are you sure you want to delete "${cover['title']}"? This action cannot be undone.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('${cover['title']} deleted'),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                },
+                style: TextButton.styleFrom(foregroundColor: Colors.red),
+                child: const Text('Delete'),
+              ),
+            ],
+          ),
     );
   }
 
@@ -501,10 +848,18 @@ class _JournalVaultScreenState extends State<JournalVaultScreen>
     );
   }
 
-  void _showExportDialog(BuildContext context, {String? initialFormat}) {
+  void _showExportDialog(
+    BuildContext context, {
+    String? initialFormat,
+    Map<String, dynamic>? coverData,
+  }) {
     showDialog(
       context: context,
-      builder: (context) => ExportOptionsDialog(initialFormat: initialFormat),
+      builder:
+          (context) => ExportOptionsDialog(
+            initialFormat: initialFormat,
+            coverData: coverData,
+          ),
     );
   }
 
@@ -546,8 +901,9 @@ class _JournalVaultScreenState extends State<JournalVaultScreen>
 
 class ExportOptionsDialog extends StatefulWidget {
   final String? initialFormat;
+  final Map<String, dynamic>? coverData;
 
-  const ExportOptionsDialog({super.key, this.initialFormat});
+  const ExportOptionsDialog({super.key, this.initialFormat, this.coverData});
 
   @override
   State<ExportOptionsDialog> createState() => _ExportOptionsDialogState();
@@ -563,13 +919,19 @@ class _ExportOptionsDialogState extends State<ExportOptionsDialog>
   bool _includeMoodData = false;
   DateTimeRange? _dateRange;
   final List<String> _selectedTags = [];
-
   @override
   void initState() {
     super.initState();
     _selectedFormat = widget.initialFormat ?? 'PDF';
-    _titleController.text = 'My Journal';
-    _authorController.text = 'Author Name';
+
+    // Set default values from cover data if available
+    if (widget.coverData != null) {
+      _titleController.text = widget.coverData!['title'] ?? 'My Journal';
+      _authorController.text = 'Journal Author';
+    } else {
+      _titleController.text = 'My Journal';
+      _authorController.text = 'Author Name';
+    }
   }
 
   @override
@@ -936,5 +1298,588 @@ class _ExportOptionsDialogState extends State<ExportOptionsDialog>
       'Dec',
     ];
     return '${months[date.month - 1]} ${date.day}, ${date.year}';
+  }
+}
+
+// Journal Cover Detail Screen
+class JournalCoverDetailScreen extends StatelessWidget {
+  final Map<String, dynamic> cover;
+
+  const JournalCoverDetailScreen({super.key, required this.cover});
+  @override
+  Widget build(BuildContext context) {
+    final color = cover['color'] as Color;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(cover['title']),
+        backgroundColor: color,
+        foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            onPressed: () => _showOptionsMenu(context),
+            icon: const Icon(Icons.more_vert),
+          ),
+        ],
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [color.withOpacity(0.3), Colors.white],
+          ),
+        ),
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            _buildCoverPreview(context),
+            const SizedBox(height: 24),
+            _buildQuickStats(context),
+            const SizedBox(height: 24),
+            _buildRecentEntries(context),
+            const SizedBox(height: 24),
+            _buildActionButtons(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCoverPreview(BuildContext context) {
+    final theme = Theme.of(context);
+    final color = cover['color'] as Color;
+
+    return Card(
+      elevation: 8,
+      child: Container(
+        height: 200,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [color, color.withOpacity(0.7)],
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(cover['icon'] as IconData, size: 48, color: Colors.white),
+              const SizedBox(height: 16),
+              Text(
+                cover['title'],
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuickStats(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Journal Statistics',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildStatItem(
+                  'Entries',
+                  '${cover['entryCount']}',
+                  Icons.edit_note,
+                ),
+                _buildStatItem(
+                  'Days',
+                  '${(cover['entryCount'] as int) + 5}',
+                  Icons.calendar_today,
+                ),
+                _buildStatItem(
+                  'Words',
+                  '${(cover['entryCount'] as int) * 150}',
+                  Icons.text_fields,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatItem(String label, String value, IconData icon) {
+    return Column(
+      children: [
+        Icon(icon, size: 24, color: cover['color'] as Color),
+        const SizedBox(height: 8),
+        Text(
+          value,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+      ],
+    );
+  }
+
+  Widget _buildRecentEntries(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Recent Entries',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: 3,
+              separatorBuilder: (context, index) => const Divider(),
+              itemBuilder: (context, index) {
+                final dates = ['Today', 'Yesterday', '2 days ago'];
+                return ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: CircleAvatar(
+                    backgroundColor: (cover['color'] as Color).withOpacity(0.2),
+                    child: Text('${index + 1}'),
+                  ),
+                  title: Text('Entry ${index + 1}'),
+                  subtitle: Text(dates[index]),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    // Navigate to specific entry
+                  },
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionButtons(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: () {
+              // Add new entry to this cover
+            },
+            icon: const Icon(Icons.add),
+            label: const Text('Add New Entry'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: cover['color'] as Color,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.all(16),
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  // Edit cover settings
+                },
+                icon: const Icon(Icons.edit),
+                label: const Text('Edit Cover'),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  // Export this cover as book
+                },
+                icon: const Icon(Icons.download),
+                label: const Text('Export'),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  void _showOptionsMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder:
+          (context) => Container(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.share),
+                  title: const Text('Share Cover'),
+                  onTap: () => Navigator.pop(context),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.copy),
+                  title: const Text('Duplicate'),
+                  onTap: () => Navigator.pop(context),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.archive),
+                  title: const Text('Archive'),
+                  onTap: () => Navigator.pop(context),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.delete, color: Colors.red),
+                  title: const Text(
+                    'Delete',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                  onTap: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+          ),
+    );
+  }
+}
+
+// Journal Cover Creator Dialog
+class JournalCoverCreatorDialog extends StatefulWidget {
+  final Map<String, dynamic>? existingCover;
+
+  const JournalCoverCreatorDialog({super.key, this.existingCover});
+
+  @override
+  State<JournalCoverCreatorDialog> createState() =>
+      _JournalCoverCreatorDialogState();
+}
+
+class _JournalCoverCreatorDialogState extends State<JournalCoverCreatorDialog>
+    with SafeStateMixin {
+  late TextEditingController _titleController;
+  Color _selectedColor = Colors.blue;
+  IconData _selectedIcon = Icons.book;
+  String _selectedPattern = 'classic';
+
+  final List<Color> _colorOptions = [
+    Colors.blue,
+    Colors.green,
+    Colors.purple,
+    Colors.orange,
+    Colors.pink,
+    Colors.teal,
+    Colors.red,
+    Colors.indigo,
+    Colors.amber,
+    Colors.cyan,
+  ];
+
+  final List<IconData> _iconOptions = [
+    Icons.book,
+    Icons.menu_book,
+    Icons.auto_stories,
+    Icons.library_books,
+    Icons.edit_note,
+    Icons.note_alt,
+    Icons.spa,
+    Icons.explore,
+    Icons.star,
+    Icons.favorite,
+    Icons.palette,
+    Icons.psychology,
+  ];
+
+  final List<String> _patternOptions = [
+    'classic',
+    'modern',
+    'vintage',
+    'minimalist',
+    'artistic',
+    'travel',
+    'zen',
+    'motivational',
+    'floral',
+    'geometric',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(
+      text: widget.existingCover?['title'] ?? '',
+    );
+    if (widget.existingCover != null) {
+      _selectedColor = widget.existingCover!['color'] as Color;
+      _selectedIcon = widget.existingCover!['icon'] as IconData;
+      _selectedPattern = widget.existingCover!['pattern'] as String;
+    }
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isEditing = widget.existingCover != null;
+
+    return Dialog(
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 500, maxHeight: 600),
+        child: Column(
+          children: [
+            // Header
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: _selectedColor,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(_selectedIcon, color: Colors.white, size: 24),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      isEditing ? 'Edit Cover' : 'Create New Cover',
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.close, color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+            // Content
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Title Input
+                    TextField(
+                      controller: _titleController,
+                      decoration: const InputDecoration(
+                        labelText: 'Cover Title',
+                        hintText: 'My Amazing Journal',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Color Selection
+                    Text(
+                      'Choose Color',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children:
+                          _colorOptions.map((color) {
+                            final isSelected = _selectedColor == color;
+                            return GestureDetector(
+                              onTap:
+                                  () => safeSetState(
+                                    () => _selectedColor = color,
+                                  ),
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: color,
+                                  shape: BoxShape.circle,
+                                  border:
+                                      isSelected
+                                          ? Border.all(
+                                            color: Colors.black,
+                                            width: 3,
+                                          )
+                                          : null,
+                                ),
+                                child:
+                                    isSelected
+                                        ? const Icon(
+                                          Icons.check,
+                                          color: Colors.white,
+                                        )
+                                        : null,
+                              ),
+                            );
+                          }).toList(),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Icon Selection
+                    Text(
+                      'Choose Icon',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children:
+                          _iconOptions.map((icon) {
+                            final isSelected = _selectedIcon == icon;
+                            return GestureDetector(
+                              onTap:
+                                  () =>
+                                      safeSetState(() => _selectedIcon = icon),
+                              child: Container(
+                                width: 48,
+                                height: 48,
+                                decoration: BoxDecoration(
+                                  color:
+                                      isSelected
+                                          ? _selectedColor.withOpacity(0.2)
+                                          : Colors.grey.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border:
+                                      isSelected
+                                          ? Border.all(
+                                            color: _selectedColor,
+                                            width: 2,
+                                          )
+                                          : null,
+                                ),
+                                child: Icon(
+                                  icon,
+                                  color:
+                                      isSelected ? _selectedColor : Colors.grey,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Pattern Selection
+                    Text(
+                      'Choose Pattern',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children:
+                          _patternOptions.map((pattern) {
+                            final isSelected = _selectedPattern == pattern;
+                            return FilterChip(
+                              label: Text(pattern.toUpperCase()),
+                              selected: isSelected,
+                              onSelected: (selected) {
+                                safeSetState(() => _selectedPattern = pattern);
+                              },
+                              selectedColor: _selectedColor.withOpacity(0.2),
+                              checkmarkColor: _selectedColor,
+                            );
+                          }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // Actions
+            Container(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Cancel'),
+                  ),
+                  const SizedBox(width: 16),
+                  ElevatedButton(
+                    onPressed:
+                        _titleController.text.isNotEmpty ? _saveCover : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _selectedColor,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: Text(isEditing ? 'Update' : 'Create'),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _saveCover() {
+    final coverData = {
+      'id':
+          widget.existingCover?['id'] ?? DateTime.now().millisecondsSinceEpoch,
+      'title': _titleController.text.trim(),
+      'color': _selectedColor,
+      'pattern': _selectedPattern,
+      'icon': _selectedIcon,
+      'entryCount': widget.existingCover?['entryCount'] ?? 0,
+      'lastModified': DateTime.now(),
+    };
+
+    // TODO: Save coverData to persistent storage
+    debugPrint('Saving cover: ${coverData['title']}');
+
+    Navigator.of(context).pop();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          widget.existingCover != null
+              ? 'Cover updated successfully!'
+              : 'New cover created successfully!',
+        ),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 }
